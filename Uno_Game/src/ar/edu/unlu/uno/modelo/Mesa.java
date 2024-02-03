@@ -13,7 +13,7 @@ public class Mesa implements Observable {
 	private PozoDescarte pozoDescarte;
 	private ArrayList<Jugador> jugadores; // cada Jugador se identifica por su indice en el array
 	private ManejadorTurnos manejadorTurnos;
-	private final int cartasIniciales = 3;
+	private final int cartasIniciales = 7;
 	private ArrayList<Observador> observadores;
 
 	public Mesa() {
