@@ -19,7 +19,7 @@ public class CartaCambioColorRobaCuatro extends Carta {
 	}
 	
 	@Override
-	public void aplicarEfecto(Mesa mesa, int idJugador) {
+	public void aplicarEfecto(Mesa mesa, int idJugador) throws Exception {
 		mesa.getPozoDescarte().agregarCartasExtra(4);
 		mesa.getMazoPrincipal().setPuedeRobar(false); //si hay cartas extras acumuladas el sguiente turno no puedo robar del mazo
 		mesa.notificar(Eventos.CAMBIAR_COLOR);

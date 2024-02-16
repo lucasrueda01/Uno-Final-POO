@@ -26,5 +26,5 @@ public class CartaRobaDos extends Carta {
 	public String nombre() {
 		return "ROBA 2";
 	}
-
+	
 }

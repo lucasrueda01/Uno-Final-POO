@@ -25,7 +25,7 @@ public class Mesa implements Observable {
 		this.observadores = new ArrayList<>();
 	}
 
-	public void agregarJugador(String nombre) {
+	public void agregarJugador(String nombre) throws Exception {
 		Jugador j = new Jugador(nombre, jugadores.size());
 		jugadores.add(j);
 		this.repartir(j.getId(), cartasIniciales);
@@ -62,7 +62,7 @@ public class Mesa implements Observable {
 		this.pozoDescarte.setCartasExtra(0);
 	}
 
-	public void descartarCarta(int idJugador, int iCarta) {
+	public void descartarCarta(int idJugador, int iCarta) throws Exception {
 		Carta cartaJugador = jugadores.get(idJugador).getCarta(iCarta);
 		if (cartaJugador.esJugadaValida(this.pozoDescarte)) {
 			cartaJugador.aplicarEfecto(this, idJugador);
@@ -118,7 +118,7 @@ public class Mesa implements Observable {
 	public String imprimirListaJugadores() {
 		String s = "";
 		for (Jugador j : this.getListaJugadores())
-			s = s + "Jugador " + j.getId() + " : " + j.getNombre() + "\n";
+			s = s + "Jugador " + (j.getId() + 1) + " : " + j.getNombre() + "\n";
 		return s;
 	}
 
@@ -129,7 +129,7 @@ public class Mesa implements Observable {
 	public String imprimirTablaPuntuaciones() {
 		String s = "";
 		if (this.jugadores.size() > 0) {
-			s = s + "NOMBRE ----- PUNTUACION\n";
+			s = s + "NOMBRE -- PUNTUACION\n";
 			for (Jugador j : jugadores)
 				s = s + j.getNombre() + " ------- " + j.getPuntaje() + "pts.\n";
 		} else
@@ -139,7 +139,7 @@ public class Mesa implements Observable {
 
 	// Metodos de Observable
 	@Override
-	public void notificar(Eventos evento) {
+	public void notificar(Eventos evento) throws Exception {
 		for (Observador observador : this.observadores)
 			observador.actualizar(evento, this);
 	}

@@ -46,7 +46,7 @@ public class VistaC implements IVista {
 				break;
 			case "2":
 				if (this.controlador.haySuficientesJugadores())
-					this.comenzarJuego();
+					this.jugar();
 				else 
 					this.imprimirCartel("ERROR - No hay suficientes jugadores para comenzar");
 				break;
@@ -64,7 +64,7 @@ public class VistaC implements IVista {
 		System.exit(0);
 	}
 
-	public void formularioJugador() {
+	public void formularioJugador() throws Exception {
 		System.out.print("Ingrese el nombre: ");
 		String nombre = this.entrada.nextLine();
 		this.controlador.agregarJugador(nombre);
@@ -107,8 +107,7 @@ public class VistaC implements IVista {
 		}
 	}
 
-	@Override
-	public void comenzarJuego() throws Exception {
+	public void jugar() throws Exception {
 		boolean terminado = false;
 		this.limpiarPantalla();
 		System.out.println("Repartiendo cartas...");
@@ -157,7 +156,7 @@ public class VistaC implements IVista {
 		}
 	}
 
-	public Colores elegirNuevoColor() {
+	public void elegirNuevoColor() {
 		System.out.println("");
 		int opcion = -1;
 		while (opcion < 1 || opcion >= Colores.values().length) {
@@ -169,6 +168,16 @@ public class VistaC implements IVista {
 			System.out.print("Elija un nuevo color: ");
 			opcion = elegirOpcion();
 		}
-		return Colores.values()[opcion - 1];
+		this.controlador.cambiarColor(Colores.values()[opcion - 1]);
+	}
+
+	@Override
+	public void jugar(String opcion) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void mostrar(String s) {
+		System.out.println();
 	}
 }

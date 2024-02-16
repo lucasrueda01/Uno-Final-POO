@@ -24,7 +24,7 @@ public abstract class Carta {
 		return false;
 	}
 	
-	public abstract void aplicarEfecto(Mesa mesa, int idJugador);
+	public abstract void aplicarEfecto(Mesa mesa, int idJugador) throws Exception;
 	
 	public boolean esComodin() {
 		return true;

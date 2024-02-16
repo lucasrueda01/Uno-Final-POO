@@ -12,7 +12,7 @@ public class CartaCambioColor extends Carta {
 	}
 
 	@Override
-	public void aplicarEfecto(Mesa mesa, int idJugador) {
+	public void aplicarEfecto(Mesa mesa, int idJugador) throws Exception {
 		mesa.getMazoPrincipal().setPuedeRobar(true);
 		mesa.notificar(Eventos.CAMBIAR_COLOR);
 	}

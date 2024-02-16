@@ -58,7 +58,7 @@ public class Jugador {
 	}
 	
 	public String mostrarMano() {
-		String s = "----------------Mano de " + this.nombre + "----------------------------\n";
+		String s = "-------------------------Mano de " + this.nombre + "----------------------------\n";
 		for (int i = 0; i < this.mano.size(); i++) 
 			s = s + ((i + 1) + ". [" + this.getCarta(i) + "]\n");
 		s = s + "----------------------------------------------------------";

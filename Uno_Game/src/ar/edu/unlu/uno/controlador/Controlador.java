@@ -1,5 +1,7 @@
 package ar.edu.unlu.uno.controlador;
 
+import java.util.concurrent.TimeUnit;
+
 import ar.edu.unlu.uno.modelo.Colores;
 import ar.edu.unlu.uno.modelo.Eventos;
 import ar.edu.unlu.uno.modelo.Jugador;
@@ -13,7 +15,7 @@ public class Controlador implements Observador {
 	private Mesa modelo;
 	private IVista vista;
 
-	public Controlador(Mesa modelo, VistaC vista) throws Exception {
+	public Controlador(Mesa modelo, IVista vista) throws Exception {
 		this.modelo = modelo;
 		this.vista = vista;
 		this.vista.setControlador(this);
@@ -21,15 +23,15 @@ public class Controlador implements Observador {
 		this.vista.iniciar();
 	}
 
-	public String imprimirListaJugadores() {
-		return this.modelo.imprimirListaJugadores();
+	public void imprimirListaJugadores() {
+		this.vista.mostrar(this.modelo.imprimirListaJugadores());
 	}
 
 	public boolean haySuficientesJugadores() {
 		return this.modelo.getListaJugadores().size() > 1;
 	}
 
-	public void agregarJugador(String nombre) {
+	public void agregarJugador(String nombre) throws Exception {
 		this.modelo.agregarJugador(nombre);
 	}
 
@@ -65,7 +67,7 @@ public class Controlador implements Observador {
 		return this.jugadorTurnoActual().getMano().size();
 	}
 
-	public void descartarCarta(int idJugador, int iCarta) {
+	public void descartarCarta(int idJugador, int iCarta) throws Exception {
 		this.modelo.descartarCarta(idJugador, iCarta);
 	}
 
@@ -85,22 +87,25 @@ public class Controlador implements Observador {
 		return this.modelo.getJugador(id);
 	}
 	
+	public void cambiarColor(Colores color) {
+		this.modelo.getPozoDescarte().setColorPartida(color);
+	}
+	
 	// Metodos de Observador
 	@Override
-	public void actualizar(Eventos evento, Observable observable) {
+	public void actualizar(Eventos evento, Observable observable) throws Exception {
 		switch (evento) {
 		case JUGADOR_AGREGADO:
-			this.vista.imprimirCartel("-Jugador agregado!-");
+			//this.vista.imprimirCartel("-Jugador agregado!-");
 			break;
 		case CARTA_JUGADA:
-			this.vista.imprimirCartel("-Carta jugada!-");
+			//this.vista.imprimirCartel("-Carta jugada!-");
 			break;
 		case CARTA_INVALIDA:
 			this.vista.imprimirCartel("-ERROR... Carta incompatible-");
 			break;
 		case CAMBIAR_COLOR:
-			Colores nuevoColor = this.vista.elegirNuevoColor();
-			this.modelo.getPozoDescarte().setColorPartida(nuevoColor);;
+			this.vista.elegirNuevoColor();
 			break;
 		default:
 			break;

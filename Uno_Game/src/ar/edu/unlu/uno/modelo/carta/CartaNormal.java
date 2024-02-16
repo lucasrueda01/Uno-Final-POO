@@ -21,6 +21,8 @@ public class CartaNormal extends Carta {
 			return true;
 		if (!pozo.verTope().tieneColor())
 			return false;
+		if (pozo.verTope().tieneColor() && pozo.verTope().esComodin())
+			return false;
 		if (this.esCompatible((CartaNormal) pozo.verTope())) // Ya se sabe que es una carta normal (No comodin)
 			return true;
 		return false;
