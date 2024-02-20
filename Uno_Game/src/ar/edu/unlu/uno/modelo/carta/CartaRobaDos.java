@@ -1,6 +1,7 @@
 package ar.edu.unlu.uno.modelo.carta;
 
 import ar.edu.unlu.uno.modelo.Colores;
+import ar.edu.unlu.uno.modelo.Eventos;
 import ar.edu.unlu.uno.modelo.Mesa;
 import ar.edu.unlu.uno.modelo.PozoDescarte;
 
@@ -12,7 +13,7 @@ public class CartaRobaDos extends Carta {
 	}
 
 	@Override
-	public void aplicarEfecto(Mesa mesa, int idJugador) {
+	public void aplicarEfecto(Mesa mesa, int idJugador) throws Exception {
 		mesa.getPozoDescarte().agregarCartasExtra(2);
 		mesa.getMazoPrincipal().setPuedeRobar(false); //si hay cartas extras acumuladas el siguiente turno no puedo robar del mazo
 	}

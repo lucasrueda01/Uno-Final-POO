@@ -5,4 +5,5 @@ public enum Eventos {
 	CARTA_JUGADA,
 	CARTA_INVALIDA,
 	CAMBIAR_COLOR,
+	CAMBIO_TURNO,
 }

@@ -1,6 +1,7 @@
 package ar.edu.unlu.uno.modelo.carta;
 
 import ar.edu.unlu.uno.modelo.Colores;
+import ar.edu.unlu.uno.modelo.Eventos;
 import ar.edu.unlu.uno.modelo.Mesa;
 import ar.edu.unlu.uno.modelo.PozoDescarte;
 
@@ -12,7 +13,7 @@ public class CartaSaltoTurno extends Carta {
 	}
 
 	@Override
-	public void aplicarEfecto(Mesa mesa, int idJugador) {
+	public void aplicarEfecto(Mesa mesa, int idJugador) throws Exception {
 		mesa.getMazoPrincipal().setPuedeRobar(true);
 		mesa.getManejadorTurnos().setSalteaTurno(true);
 		mesa.agregarCartasExtra(idJugador);

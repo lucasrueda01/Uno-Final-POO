@@ -10,11 +10,11 @@ public interface IVista {
 	
 	public void imprimirCartel(String s);
 	
-	public void elegirNuevoColor();
+	public void elegirNuevoColor() throws Exception;
 
-	void jugar(String opcion) throws Exception;
+	public void jugar() throws Exception;
 
-	public void mostrar(String imprimirListaJugadores);
+	public void mostrar(String s);
 
-	
+	public void mostrarMenuPrincipal();
 }

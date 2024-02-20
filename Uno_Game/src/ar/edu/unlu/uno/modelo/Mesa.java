@@ -25,11 +25,12 @@ public class Mesa implements Observable {
 		this.observadores = new ArrayList<>();
 	}
 
-	public void agregarJugador(String nombre) throws Exception {
+	public int agregarJugador(String nombre) throws Exception {
 		Jugador j = new Jugador(nombre, jugadores.size());
 		jugadores.add(j);
 		this.repartir(j.getId(), cartasIniciales);
 		this.notificar(Eventos.JUGADOR_AGREGADO);
+		return j.getId();
 	}
 
 	public void repartir(int idJugador, int n) {
@@ -70,17 +71,19 @@ public class Mesa implements Observable {
 			this.pozoDescarte.agregar(cartaJugador);
 			this.manejadorTurnos.siguienteTurno();
 			this.notificar(Eventos.CARTA_JUGADA);
+			this.notificar(Eventos.CAMBIO_TURNO);
 		} else {
 			this.notificar(Eventos.CARTA_INVALIDA);
 		}
 	}
 
-	public void descartarTurno(int idJugador) { // luego de que el jugador tome una carta y decida pasar el turno
+	public void descartarTurno(int idJugador) throws Exception { // luego de que el jugador tome una carta y decida pasar el turno
 		this.agregarCartasExtra(idJugador);
 		this.manejadorTurnos.siguienteTurno();
 		this.mazoPrincipal.setPuedeRobar(true);
+		this.notificar(Eventos.CAMBIO_TURNO);
 	}
-
+	
 	public int calcularPuntajeFinal(int idJugador) {
 		int puntos = 0;
 		for (Jugador j : jugadores) {

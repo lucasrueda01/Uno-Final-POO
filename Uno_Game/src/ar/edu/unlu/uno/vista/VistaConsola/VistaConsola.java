@@ -19,6 +19,7 @@ public class VistaConsola extends JFrame implements IVista {
 
 	private JTextArea textArea;
 	private JTextField inputField;
+	private int clienteID;
 
 	private Controlador controlador;
 	private Estados estado;
@@ -51,12 +52,12 @@ public class VistaConsola extends JFrame implements IVista {
 		getContentPane().add(new JScrollPane(textArea), BorderLayout.CENTER);
 		getContentPane().add(inputField, BorderLayout.SOUTH);
 		setVisible(true);
-		this.estado = Estados.MENU_PRINCIPAL;
+		this.estado = Estados.AGREGAR_JUGADOR;
 	}
 
 	@Override
 	public void iniciar() throws Exception {
-		this.mostrarMenuPrincipal();
+		this.formularioJugador();
 	}
 
 	private void procesarInput(String inputText) throws Exception {
@@ -65,11 +66,12 @@ public class VistaConsola extends JFrame implements IVista {
 			this.menu(inputText);
 			break;
 		case AGREGAR_JUGADOR:
-			this.controlador.agregarJugador(inputText);
+			this.clienteID = this.controlador.agregarJugador(inputText);
+			setTitle("UNO - " + inputText);
 			this.volverAlMenuPrincipal();
 			break;
 		case JUEGO:
-			this.jugar(inputText);
+			this.jugar();
 			break;
 		case TABLA_PUNTUACIONES:
 			if (inputText.equals("0"))
@@ -96,10 +98,6 @@ public class VistaConsola extends JFrame implements IVista {
 	private void menu(String opcion) throws Exception {
 		switch (opcion) {
 		case "1":
-			this.estado = Estados.AGREGAR_JUGADOR;
-			this.formularioJugador();
-			break;
-		case "2":
 			if (this.controlador.haySuficientesJugadores()) {
 				this.estado = Estados.JUEGO;
 				this.procesarInput(opcion);
@@ -108,9 +106,12 @@ public class VistaConsola extends JFrame implements IVista {
 				this.imprimirCartel("No hay suficientes jugadores para comenzar");
 			}
 			break;
-		case "3":
+		case "2":
 			this.estado = Estados.TABLA_PUNTUACIONES;
 			this.mostrarTablaPuntuaciones();
+			break;
+		case "0":
+			System.exit(0);
 			break;
 		}
 	}
@@ -123,8 +124,7 @@ public class VistaConsola extends JFrame implements IVista {
 	public void mostrarMenuPrincipal() {
 		textArea.setText(
 				"########################  UNO  #############################\n" + "\n" + "Selecciona una opcion:\n"
-						+ "1. Agregar jugador\n" + "2. Comenzar UNO\n" + "3. Tabla de puntuaciones\n" + "0. Salir\n");
-		this.controlador.imprimirListaJugadores();
+						+ "1. Comenzar UNO\n" + "2. Tabla de puntuaciones\n" + "0. Salir\n");
 	}
 
 	public void formularioJugador() {
@@ -132,50 +132,58 @@ public class VistaConsola extends JFrame implements IVista {
 	}
 
 	@Override
-	public void jugar(String opcion) throws Exception {
+	public void jugar() throws Exception {
 		int IDjugador = this.controlador.jugadorTurnoActual().getId();
-		textArea.setText(this.controlador.mostrarManoJugador());
-		if (this.controlador.getCartasExtra() == 0) {
-			if (this.controlador.puedeRobar())
-				this.imprimirCartel("0. SACAR CARTA DEL MAZO");
-			else
-				this.imprimirCartel("0. PASAR TURNO");
+		if (IDjugador == this.clienteID) {
+			inputField.setEnabled(true);
+			textArea.setText(this.controlador.mostrarManoJugador());
+			if (this.controlador.getCartasExtra() == 0) {
+				if (this.controlador.puedeRobar())
+					this.imprimirCartel("0. SACAR CARTA DEL MAZO");
+				else
+					this.imprimirCartel("0. PASAR TURNO");
+			} else {
+				this.imprimirCartel("0. RECIBIR LAS " + this.controlador.getCartasExtra() + " CARTAS Y PASAR TURNO");
+			}
+			this.imprimirCartel("");
+			this.imprimirCartel("POZO: [" + this.controlador.getTopePozo() + "]");
+			this.imprimirCartel("COLOR: [" + this.controlador.getColorActual().getValor() + "]");
+			this.imprimirCartel("CARTAS EXTRAS ACUMULADAS: " + this.controlador.getCartasExtra());
+			this.imprimirCartel("");
+			this.imprimirCartel("Elija una opcion ");
+			this.estado = Estados.ESPERANDO_JUGADA;
 		} else {
-			this.imprimirCartel("0. RECIBIR LAS " + this.controlador.getCartasExtra() + " CARTAS Y PASAR TURNO");
+			textArea.setText("Esperando Turno...");
+			inputField.setEnabled(false);
 		}
-		this.imprimirCartel("");
-		this.imprimirCartel("POZO: [" + this.controlador.getTopePozo() + "]");
-		this.imprimirCartel("COLOR: [" + this.controlador.getColorActual().getValor() + "]");
-		this.imprimirCartel("CARTAS EXTRAS ACUMULADAS: " + this.controlador.getCartasExtra());
-		this.imprimirCartel("");
-		this.imprimirCartel("Elija una opcion ");
-		this.estado = Estados.ESPERANDO_JUGADA;
 	}
 
 	private void procesarJugada(String inputText) throws Exception {
 		int IDjugador = this.controlador.jugadorTurnoActual().getId();
-		int numero = Integer.parseInt(inputText);
-		if ((numero >= 1) && (numero <= this.controlador.tamañoManoJugador())) {
-			this.controlador.descartarCarta(IDjugador, numero - 1);
-			if (this.estado.equals(Estados.ELIGIENDO_COLOR))
-				return;
-			this.estado = Estados.JUEGO;
-			this.procesarInput(inputText);
-		} else if (numero == 0) {
-			if (this.controlador.puedeRobar())
-				this.controlador.robarParaJugador(IDjugador);// SACAR CARTA DEL MAZO
-			else {
-				this.controlador.descartarTurno(IDjugador);// PASAR TURNO / RECIBIR LAS N CARTAS Y PASAR TURNO
+		if (IDjugador == this.clienteID) {
+			int numero = Integer.parseInt(inputText);
+			if ((numero >= 1) && (numero <= this.controlador.tamañoManoJugador())) {
+				this.controlador.descartarCarta(IDjugador, numero - 1);
+				if (this.estado.equals(Estados.ELIGIENDO_COLOR))
+					return;
+				this.estado = Estados.JUEGO;
+				this.procesarInput(inputText);
+			} else if (numero == 0) {
+				if (this.controlador.puedeRobar())
+					this.controlador.robarParaJugador(IDjugador);// SACAR CARTA DEL MAZO
+				else {
+					this.controlador.descartarTurno(IDjugador);// PASAR TURNO / RECIBIR LAS N CARTAS Y PASAR TURNO
+				}
+				this.estado = Estados.JUEGO;
+				this.procesarInput(inputText);
+			} else {
+				this.imprimirCartel("-ERROR! Opcion Invalida-");
 			}
-			this.estado = Estados.JUEGO;
-			this.procesarInput(inputText);
-		} else {
-			this.imprimirCartel("-ERROR! Opcion Invalida-");
-		}
-		
-		if (this.controlador.getJugador(IDjugador).esGanador()) {
-			this.mostrarGanador(IDjugador);
-			this.estado = Estados.GANADOR;
+			
+			if (this.controlador.getJugador(IDjugador).esGanador()) {
+				this.mostrarGanador(IDjugador);
+				this.estado = Estados.GANADOR;
+			}
 		}
 	}
 
@@ -197,10 +205,12 @@ public class VistaConsola extends JFrame implements IVista {
 	}
 
 	@Override
-	public void elegirNuevoColor() {
-		this.estado = Estados.ELIGIENDO_COLOR;
-		textArea.setText("1. AZUL\n2. ROJO\n3. AMARILLO\n4. VERDE");
-		this.imprimirCartel("Elija un nuevo color: ");
+	public void elegirNuevoColor() throws Exception {
+		if (this.controlador.jugadorTurnoActual().getId() == this.clienteID) {
+			this.estado = Estados.ELIGIENDO_COLOR;
+			textArea.setText("1. AZUL\n2. ROJO\n3. AMARILLO\n4. VERDE");
+			this.imprimirCartel("Elija un nuevo color: ");
+		}
 	}
 
 	@Override

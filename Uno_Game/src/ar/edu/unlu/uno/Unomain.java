@@ -11,7 +11,9 @@ public class Unomain {
 		Mesa modelo = new Mesa();
 		//IVista vista = new VistaC();
 		IVista vista = new VistaConsola();
+		IVista vista2 = new VistaConsola();
 		Controlador controlador = new Controlador(modelo, vista);
+		Controlador controlador2 = new Controlador(modelo, vista2);
 		
 	}
 

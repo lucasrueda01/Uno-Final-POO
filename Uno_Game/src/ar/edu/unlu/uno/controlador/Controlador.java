@@ -1,7 +1,5 @@
 package ar.edu.unlu.uno.controlador;
 
-import java.util.concurrent.TimeUnit;
-
 import ar.edu.unlu.uno.modelo.Colores;
 import ar.edu.unlu.uno.modelo.Eventos;
 import ar.edu.unlu.uno.modelo.Jugador;
@@ -9,7 +7,7 @@ import ar.edu.unlu.uno.modelo.Mesa;
 import ar.edu.unlu.uno.observer.Observable;
 import ar.edu.unlu.uno.observer.Observador;
 import ar.edu.unlu.uno.vista.IVista;
-import ar.edu.unlu.uno.vista.VistaC;
+//import ar.edu.unlu.uno.vista.VistaC;
 
 public class Controlador implements Observador {
 	private Mesa modelo;
@@ -23,27 +21,23 @@ public class Controlador implements Observador {
 		this.vista.iniciar();
 	}
 
-	public void imprimirListaJugadores() {
-		this.vista.mostrar(this.modelo.imprimirListaJugadores());
-	}
-
 	public boolean haySuficientesJugadores() {
 		return this.modelo.getListaJugadores().size() > 1;
 	}
 
-	public void agregarJugador(String nombre) throws Exception {
-		this.modelo.agregarJugador(nombre);
+	public int agregarJugador(String nombre) throws Exception {
+		return this.modelo.agregarJugador(nombre);
 	}
 
 	public String imprimirPuntajes() {
 		return this.modelo.imprimirTablaPuntuaciones();
 	}
 
-	public Jugador jugadorTurnoActual() {
+	public Jugador jugadorTurnoActual() throws Exception {
 		return this.modelo.getJugador(this.modelo.getManejadorTurnos().getTurnoActual());
 	}
 
-	public String mostrarManoJugador() {
+	public String mostrarManoJugador() throws Exception {
 		return this.jugadorTurnoActual().mostrarMano();
 	}
 
@@ -63,7 +57,7 @@ public class Controlador implements Observador {
 		return this.modelo.getPozoDescarte().getColorPartida();
 	}
 	
-	public int tamañoManoJugador() {
+	public int tamañoManoJugador() throws Exception {
 		return this.jugadorTurnoActual().getMano().size();
 	}
 
@@ -75,7 +69,7 @@ public class Controlador implements Observador {
 		this.modelo.robarParaJugador(idJugador);
 	}
 	
-	public void descartarTurno(int idJugador) {
+	public void descartarTurno(int idJugador) throws Exception {
 		this.modelo.descartarTurno(idJugador);
 	}
 
@@ -87,7 +81,7 @@ public class Controlador implements Observador {
 		return this.modelo.getJugador(id);
 	}
 	
-	public void cambiarColor(Colores color) {
+	public void cambiarColor(Colores color) throws Exception {
 		this.modelo.getPozoDescarte().setColorPartida(color);
 	}
 	
@@ -99,10 +93,13 @@ public class Controlador implements Observador {
 			//this.vista.imprimirCartel("-Jugador agregado!-");
 			break;
 		case CARTA_JUGADA:
-			//this.vista.imprimirCartel("-Carta jugada!-");
+			//this.vista.imprimirCartel("-Carta jugada!-");;
 			break;
 		case CARTA_INVALIDA:
-			this.vista.imprimirCartel("-ERROR... Carta incompatible-");
+			//this.vista.imprimirCartel("-ERROR... Carta incompatible-");
+			break;
+		case CAMBIO_TURNO:
+			this.vista.jugar(); //imprime las opciones que tiene si corresponde al turno
 			break;
 		case CAMBIAR_COLOR:
 			this.vista.elegirNuevoColor();
@@ -111,5 +108,6 @@ public class Controlador implements Observador {
 			break;
 		}	
 	}
+
 
 }
